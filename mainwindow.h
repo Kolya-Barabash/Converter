@@ -3,6 +3,7 @@
 
 #include <processing.h>
 #include <convertclass.h>
+#include <tableviewer.h>
 #include <QMainWindow>
 #include <QtSql>
 #include <QSqlQuery>

@@ -18,9 +18,6 @@
     <item row="0" column="0">
      <widget class="QComboBox" name="tableBox"/>
     </item>
-    <item row="0" column="1" rowspan="8">
-     <widget class="QTableView" name="sqlView"/>
-    </item>
     <item row="1" column="0">
      <widget class="QPushButton" name="showButton">
       <property name="text">
@@ -28,17 +25,20 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="convertSqlButton">
-      <property name="text">
-       <string>Конвертировать в sqlite</string>
-      </property>
-     </widget>
+    <item row="0" column="1" rowspan="11">
+     <widget class="QTableView" name="sqlView"/>
     </item>
-    <item row="2" column="0">
+    <item row="5" column="0">
      <widget class="QPushButton" name="convertButton">
       <property name="text">
        <string>Конвертировать в CSV</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QPushButton" name="convertSqlButton">
+      <property name="text">
+       <string>Конвертировать в sqlite</string>
       </property>
      </widget>
     </item>
@@ -91,4 +91,3 @@
  <resources/>
  <connections/>
 </ui>
-

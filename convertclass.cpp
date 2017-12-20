@@ -24,7 +24,7 @@ void convertclass::convertToSql(QString filename)
         QSqlQuery q;
 
         if (!q.prepare(ex_in))
-               qDebug() << q.lastError();
+              qDebug() << q.lastError();
         // Считываем данные до конца файла
         while (!in.atEnd())
         {
@@ -141,7 +141,7 @@ void convertclass::determineSchema (QString str)
             if ( j == schema.count() )
             {
                 q.exec(QString("DELETE FROM "+tables.at(0)+";"));
-                qDebug() << "Truncate!";
+                //qDebug() << "Truncate!";
             }
             else
             {
