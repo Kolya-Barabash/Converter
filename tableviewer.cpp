@@ -2,7 +2,7 @@
 
 TableViewer::TableViewer()
 {
-
+    model = nullptr;
 }
 
 void TableViewer::setData(QSqlDatabase &db, QString table)
@@ -75,6 +75,7 @@ void TableViewer::setData(QString name)
         file.close();
     }
 }
+
 
 QStandardItemModel* TableViewer::returnModel()
 {

@@ -1,10 +1,10 @@
 #include "convertclass.h"
 
-convertclass::convertclass()
+ConvertClass::ConvertClass()
 {
 }
 
-void convertclass::convertToSql(QString filename)
+void ConvertClass::convertToSql(QString filename)
 {
     fname=filename;
 
@@ -42,7 +42,7 @@ void convertclass::convertToSql(QString filename)
 
 }
 
-void convertclass::determineType()
+void ConvertClass::determineType()
 {
     QFile file(fname);
     if ( !file.open(QFile::ReadOnly | QFile::Text) )
@@ -85,7 +85,7 @@ void convertclass::determineType()
         file.close();
     }
 }
-void convertclass::generateQuary (QString str)
+void ConvertClass::generateQuary (QString str)
 {      
         QStringList parse = parseStr(str);
         int i = 0;
@@ -107,7 +107,7 @@ void convertclass::generateQuary (QString str)
         ex_in += ex_v + ")";
         ex_cr+=")";
 }
-void convertclass::determineSchema (QString str)
+void ConvertClass::determineSchema (QString str)
 {
     dbMy = QSqlDatabase::addDatabase("QSQLITE");
     QString fileName = QFileDialog::getSaveFileName(nullptr," Save File as", "", "Databases files (*.sqlite)");

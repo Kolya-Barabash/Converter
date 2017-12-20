@@ -68,7 +68,7 @@ void MainWindow::on_convertButton_clicked()
 
 void MainWindow::on_convertSqlButton_clicked()
 {
-    convertclass convSql;
+    ConvertClass convSql;
     convSql.convertToSql(name);
     ui->statusBar->showMessage("Файл конвертирован", 5000);
 }
