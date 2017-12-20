@@ -1,3 +1,4 @@
+
 #-------------------------------------------------
 #
 # Project created by QtCreator 2017-10-12T14:57:50
@@ -27,11 +28,13 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     processing.cpp \
+	tableviewer.cpp \
     convertclass.cpp
 
 HEADERS += \
         mainwindow.h \
     processing.h \
+	 tableviewer.h \
     convertclass.h
 
 FORMS += \
