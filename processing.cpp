@@ -29,7 +29,7 @@ QStringList parseStr(QString str)
                 int in2 = str.indexOf(";",in+1);
                 if (in2 == -1)
                 {
-                    ret.append(str);
+                    ret.append(withoutQuotes(str));
                     return ret;
                 }
                 sub_str = str;
