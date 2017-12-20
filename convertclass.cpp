@@ -161,8 +161,3 @@ void convertclass::determineSchema (QString str)
         if (!q.exec(ex_cr))
             qDebug() << q.lastError();
 }
-
-
-
-
-
