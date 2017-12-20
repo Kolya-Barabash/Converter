@@ -125,7 +125,7 @@ void convertclass::determineSchema (QString str)
     //проверяем, есть ли таблицы в базе
     if (!tables.empty())
     {
-        qDebug() << "Already have tables!";
+        //qDebug() << "Already have tables!";
         QSqlRecord schema = dbMy.record(tables.at(0));
         if (schema.count() == parseStr(str).count() )
         {

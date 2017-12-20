@@ -1,15 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <processing.h>
 #include <convertclass.h>
 #include <tableviewer.h>
 #include <QMainWindow>
 #include <QtSql>
-#include <QSqlQuery>
-#include "QFileDialog"
+//#include <QSqlQuery>
+//#include "QFileDialog"
 #include <QStandardItemModel>
-#include <QTreeView>
+//#include <QTreeView>
 
 namespace Ui {
 class MainWindow;

@@ -61,12 +61,13 @@ QString withoutQuotes(QString str)
 
 QString processingForCsvStr(QString str)
 {
-    if (str.contains(";") || str.contains(",") || str.contains("\"") || str.contains("\n"))
-        return "\"" + str + "\"";
-
     if (str.contains("\""))
     {
         str.replace("\"","\"\"");
     }
+
+    if (str.contains(";") || str.contains(",") || str.contains("\"") || str.contains("\n"))
+        return "\"" + str + "\"";
+
     return str;
 }

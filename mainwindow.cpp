@@ -30,7 +30,7 @@ void MainWindow::on_convertButton_clicked()
     QString table = ui->tableBox->currentText();
 
     //создаем csv файл с выбранной таблицей
-    QString fileName = QFileDialog::getSaveFileName(this," Save File as", "", tr("Databases files (*.csv)"));
+    QString fileName = QFileDialog::getSaveFileName(this," Save File as", "", tr("Databases files (*.csv)"), Q_NULLPTR, QFileDialog::DontConfirmOverwrite);
     QString shortName = fileName.mid(fileName.lastIndexOf("/") + 1);
     QFile fileCsv(shortName);
     fileCsv.open(QIODevice::ReadWrite);
@@ -70,12 +70,15 @@ void MainWindow::on_convertSqlButton_clicked()
 {
     convertclass convSql;
     convSql.convertToSql(name);
+    ui->statusBar->showMessage("Файл конвертирован", 5000);
 }
 
 //тренируемся запоминать данные
 void MainWindow::on_actionOpenDb_triggered()
 {
     isDatabase = true;
+    if (db.isOpen())
+        db.close();
 
     QString fileName = QFileDialog::getSaveFileName(this,"Open File", "", tr("Databases files (*.sqlite)"), Q_NULLPTR, QFileDialog::DontConfirmOverwrite);
     name = fileName.mid(fileName.lastIndexOf("/") + 1);
@@ -106,6 +109,7 @@ void MainWindow::on_actionOpenDb_triggered()
 
 void MainWindow::on_showButton_clicked()
 {
+
     QString table = ui->tableBox->currentText();
     TableViewer tv;
 
@@ -119,13 +123,15 @@ void MainWindow::on_showButton_clicked()
     {
         tv.setData(name);
         ui->sqlView->setModel(tv.returnModel());
-
     }
+    ui->statusBar->showMessage("Талица отображена!", 5000);
 }
 
 void MainWindow::on_actionOpencsv_triggered()
 {
     isDatabase = false;
+    if (db.isOpen())
+        db.close();
 
     QString fileName = QFileDialog::getOpenFileName(this,tr("Open database"), "E:\qt_projects\convert", tr("Databases files (*.csv)"));
     name = fileName.mid(fileName.lastIndexOf("/") + 1);
