@@ -4,13 +4,13 @@ ConvertClass::ConvertClass()
 {
 }
 
-void ConvertClass::convertToSql(QString filename)
+void ConvertClass::convertToSql(QString fileName)
 {
-    fname=filename;
+    fName=fileName;
 
     this->determineType();
 
-    QFile file(fname);
+    QFile file(fName);
     if ( !file.open(QFile::ReadOnly | QFile::Text) )
     {
         qDebug() << "File not exists";
@@ -23,7 +23,7 @@ void ConvertClass::convertToSql(QString filename)
         this->determineSchema(line);
         QSqlQuery q;
 
-        if (!q.prepare(ex_in))
+        if (!q.prepare(exIn))
               qDebug() << q.lastError();
         // Считываем данные до конца файла
         while (!in.atEnd())
@@ -44,7 +44,7 @@ void ConvertClass::convertToSql(QString filename)
 
 void ConvertClass::determineType()
 {
-    QFile file(fname);
+    QFile file(fName);
     if ( !file.open(QFile::ReadOnly | QFile::Text) )
     {
         qDebug() << "File not exists";
@@ -90,22 +90,22 @@ void ConvertClass::generateQuary (QString str)
         QStringList parse = parseStr(str);
         int i = 0;
 
-        ex_cr = "create table T1(";
-        ex_in = "insert into T1(";
-        QString ex_v(") values(");
+        exCr = "create table T1(";
+        exIn = "insert into T1(";
+        QString exV(") values(");
 
         for (QString item : parse)
         {
-            ex_cr += item+" ";
-            ex_in += item+", ";
-            ex_v += "?, ";
-            ex_cr += types[i++]+", ";
+            exCr += item+" ";
+            exIn += item+", ";
+            exV += "?, ";
+            exCr += types[i++]+", ";
         }
-        ex_in.remove(ex_in.size()-2,2);
-        ex_cr.remove(ex_cr.size()-2,2);
-        ex_v.remove(ex_v.size()-2,2);
-        ex_in += ex_v + ")";
-        ex_cr+=")";
+        exIn.remove(exIn.size()-2,2);
+        exCr.remove(exCr.size()-2,2);
+        exV.remove(exV.size()-2,2);
+        exIn += exV + ")";
+        exCr+=")";
 }
 void ConvertClass::determineSchema (QString str)
 {
@@ -146,18 +146,18 @@ void ConvertClass::determineSchema (QString str)
             else
             {
                 q.exec(QString("DROP TABLE "+tables.at(0)+";"));
-                if (!q.exec(ex_cr))
+                if (!q.exec(exCr))
                     qDebug() << q.lastError();
             }
         }
         else
         {
             q.exec(QString("DROP TABLE "+tables.at(0)+";"));
-            if (!q.exec(ex_cr))
+            if (!q.exec(exCr))
                 qDebug() << q.lastError();
         }
     }
     else
-        if (!q.exec(ex_cr))
+        if (!q.exec(exCr))
             qDebug() << q.lastError();
 }

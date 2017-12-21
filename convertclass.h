@@ -34,13 +34,13 @@ public:
 
     /*!
      * \brief convertToSql - main function. Processes a file and converts it to Sqlite.
-     * \param filename - file directory.
+     * \param fileName - file directory.
      */
-    void convertToSql(QString filename);
+    void convertToSql(QString fileName);
 private:
     QSqlDatabase dbMy;
     QString *types = nullptr;
-    QString fname,ex_cr,ex_in;
+    QString fName,exCr,exIn;
     void determineSchema (QString str);
     void generateQuary (QString str);
     void determineType();
