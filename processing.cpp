@@ -1,4 +1,4 @@
-#include <processing.h>
+#include "processing.h"
 
 QString whatType(QString str)
 {
@@ -20,11 +20,11 @@ QStringList parseStr(QString str)
 
         while ( (in = str.indexOf(";")) != -1)
         {
-            QString sub_str = str;
-            sub_str.remove(in,str.size());
-            int count_Q = sub_str.count("\"");
+            QString subStr = str;
+            subStr.remove(in,str.size());
+            int countQ = subStr.count("\"");
 
-            while (count_Q % 2 != 0)
+            while (countQ % 2 != 0)
             {
                 int in2 = str.indexOf(";",in+1);
                 if (in2 == -1)
@@ -32,14 +32,14 @@ QStringList parseStr(QString str)
                     ret.append(withoutQuotes(str));
                     return ret;
                 }
-                sub_str = str;
-                sub_str.remove(in2,str.size());
-                count_Q = sub_str.count("\"");
+                subStr = str;
+                subStr.remove(in2,str.size());
+                countQ = subStr.count("\"");
                 in = in2;
             }
 
-            ret.append(withoutQuotes(sub_str));
-            str.remove(0,sub_str.size()+1);
+            ret.append(withoutQuotes(subStr));
+            str.remove(0,subStr.size()+1);
         }
 
         ret.append(withoutQuotes(str));
