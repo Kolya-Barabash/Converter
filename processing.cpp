@@ -48,7 +48,7 @@ QStringList parseStr(QString str)
 
 QString withoutQuotes(QString str)
 {
-    if (str[0] == "\"")
+    if (str[0] == '\"')
     {
         str.remove(0,1);
         str.remove(str.size()-1,1);

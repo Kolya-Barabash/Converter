@@ -9,6 +9,11 @@
 
 #include <QString>
 #include <QStringList>
+#include <QVariant>
+
+typedef QVector<QString> Types;
+typedef QVector<QVariant> DataRow;
+typedef QVector<DataRow> Data;
 
 /*!
  * \brief processingForCsvStr - converts a string to a csv view by adding quotes.

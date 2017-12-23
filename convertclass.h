@@ -14,6 +14,7 @@
 #include "QFileDialog"
 #include <QStandardItemModel>
 #include <QTreeView>
+#include <tablemodel.h>
 
 /*!
  * \brief The ConvertClass class.
@@ -27,23 +28,14 @@ public:
      * \brief ConvertClass constructor.
      */
     ConvertClass();
-    /*!
-     * \brief ConvertClass destructor.
-     */
-    ~ConvertClass(){ delete []types; }
 
-    /*!
-     * \brief convertToSql - main function. Processes a file and converts it to Sqlite.
-     * \param fileName - file directory.
-     */
-    void convertToSql(QString fileName);
+    void convertToSql(TableModel* model);
 private:
     QSqlDatabase dbMy;
-    QString *types = nullptr;
     QString fName,exCr,exIn;
-    void determineSchema (QString str);
-    void generateQuary (QString str);
-    void determineType();
+    QVector<QString> types;
+    void generateQuery (QStringList header);
+    void determineSchema (QStringList header);
 };
 
 #endif // CONVERTCLASS_H

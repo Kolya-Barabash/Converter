@@ -28,14 +28,16 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     processing.cpp \
-	tableviewer.cpp \
-    convertclass.cpp
+    convertclass.cpp \
+    tablemodel.cpp \
+    contractor.cpp
 
 HEADERS += \
         mainwindow.h \
     processing.h \
-	 tableviewer.h \
-    convertclass.h
+    convertclass.h \
+    tablemodel.h \
+    contractor.h
 
 FORMS += \
         mainwindow.ui

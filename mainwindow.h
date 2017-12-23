@@ -7,10 +7,12 @@
 
 #include <convertclass.h>
 #include <tableviewer.h>
+#include <contractor.h>
 #include <QMainWindow>
 #include <QtSql>
 
-namespace Ui {
+namespace Ui
+{
 class MainWindow;
 }
 
@@ -34,17 +36,14 @@ public:
 
 private slots:
 
-    void on_convertButton_clicked();
+
     void on_convertSqlButton_clicked();
 
-    void on_actionOpenDb_triggered();
     void on_actionOpencsv_triggered();
-
-    void on_showButton_clicked();
 
 private:
     Ui::MainWindow *ui;
-
+    Contractor contractor;
     QSqlDatabase db;    //база данных
     QString name;
     bool isDatabase = false;
