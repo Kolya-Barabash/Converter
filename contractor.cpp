@@ -28,7 +28,8 @@ void Contractor::openCSV()
 
         QStringList title = parseStr(line);
 
-        model->setHeaderData(title);
+        //model->setHeaderData(title);
+        model ->setHeaderData(QStringList(0));
 
         QVector<QString> types(title.count());
         QVector<QVector<QVariant>> data;

@@ -4,12 +4,31 @@ ConvertClass::ConvertClass()
 {
 }
 
-void ConvertClass::convertToSql(QString fileName)
+void ConvertClass::convertToSql(TableModel* model)
 {
-  fName = fileName;
+    this->types = model->getTypes();
+    this->generateQuery(model->getHeader());
+    this->determineSchema(model->getHeader());
 
-  this->determineType();
+    QSqlQuery q;
 
+    if (!q.prepare(exIn))
+      qDebug() << q.lastError();
+
+    QVector<QVector<QVariant>> data = model->getData();
+
+    for (int i = 0 ; i < data.count(); i++)
+    {
+        for (int j = 0 ; j < data[i].count(); j++)
+        {
+            q.addBindValue(data[i][j]);
+        }
+        q.exec();
+    }
+
+    dbMy.close();
+
+  /*
   QFile file(fName);
   if ( !file.open(QFile::ReadOnly | QFile::Text) )
     qDebug() << "File not exists";
@@ -35,9 +54,35 @@ void ConvertClass::convertToSql(QString fileName)
     file.close();
     dbMy.close();
   }
+  */
 
 }
 
+void ConvertClass::generateQuery (QStringList header)
+{
+  int i = 0;
+
+  exCr = "create table T1(";
+  exIn = "insert into T1(";
+  QString exV(") values(");
+
+  for (QString item : header)
+  {
+    exCr += item + " ";
+    exIn += item + ", ";
+    exV += "?, ";
+    exCr += types[i++] + ", ";
+  }
+  exIn.remove(exIn.size() - 2, 2);
+  exCr.remove(exCr.size() - 2, 2);
+  exV.remove(exV.size() - 2, 2);
+  exIn += exV + ")";
+  exCr += ")";
+}
+
+
+
+/*
 void ConvertClass::determineType()
 {
   QFile file(fName);
@@ -77,34 +122,15 @@ void ConvertClass::determineType()
     file.close();
   }
 }
-void ConvertClass::generateQuery (QString str)
-{
-  QStringList parse = parseStr(str);
-  int i = 0;
+*/
 
-  exCr = "create table T1(";
-  exIn = "insert into T1(";
-  QString exV(") values(");
 
-  for (QString item : parse)
-  {
-    exCr += item + " ";
-    exIn += item + ", ";
-    exV += "?, ";
-    exCr += types[i++] + ", ";
-  }
-  exIn.remove(exIn.size() - 2, 2);
-  exCr.remove(exCr.size() - 2, 2);
-  exV.remove(exV.size() - 2, 2);
-  exIn += exV + ")";
-  exCr += ")";
-}
-void ConvertClass::determineSchema (QString str)
+
+void ConvertClass::determineSchema (QStringList header)
 {
   dbMy = QSqlDatabase::addDatabase("QSQLITE");
   QString fileName = QFileDialog::getSaveFileName(nullptr, " Save File as", "", "Databases files (*.sqlite)");
-  QString shortName = fileName.mid(fileName.lastIndexOf("/") + 1);
-  dbMy.setDatabaseName(shortName);
+  dbMy.setDatabaseName(fileName);
 
   //открываем базу данных
   if (!dbMy.open())
@@ -119,10 +145,10 @@ void ConvertClass::determineSchema (QString str)
   {
     //qDebug() << "Already have tables!";
     QSqlRecord schema = dbMy.record(tables.at(0));
-    if (schema.count() == parseStr(str).count() )
+    if (schema.count() == header.count() )
     {
       int j = 0;
-      for (QString item : parseStr(str))
+      for (QString item : header)
       {
         if (item == schema.fieldName(j))
           j++;

@@ -7,8 +7,6 @@ class TableModel: public QAbstractTableModel
 {
     Q_OBJECT
   public:
-    //using QAbstractTableModel::setData;
-
     explicit TableModel(QObject* parent = 0);
 
     void setTableName(const QString& tableName);
@@ -18,7 +16,7 @@ class TableModel: public QAbstractTableModel
 
     QString getTableName();
     QVector<QVector<QVariant>> getData();
-    QStringList getHeaderData();
+    QStringList getHeader();
     QVector<QString> getTypes();
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
@@ -28,7 +26,7 @@ class TableModel: public QAbstractTableModel
 
   protected:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role);
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
   private:
     QString name;

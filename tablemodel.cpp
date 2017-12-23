@@ -19,13 +19,19 @@ void TableModel::setData(const QVector<QVector<QVariant>> &tableData)
     else
     {
         tData = tableData;
-        emit dataChanged(createIndex(0, 0), createIndex(tData.count(), tData.at(0).count()));
+        emit dataChanged(createIndex(0, 0), createIndex(tData.count(), header.count()));
     }
 }
 
 void TableModel::setHeaderData(const QStringList& tableHeader)
 {
-    header = tableHeader;
+    if (tableHeader.empty())
+    {
+    }
+    {
+        header = tableHeader;
+        emit headerDataChanged(Qt::Horizontal,0,header.count());
+    }
 }
 
 void TableModel::clear()
@@ -50,7 +56,7 @@ QVector<QVector<QVariant>> TableModel::getData()
     return tData;
 }
 
-QStringList TableModel::getHeaderData()
+QStringList TableModel::getHeader()
 {
     return header;
 }
@@ -84,9 +90,9 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role)
+QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role == Qt::DisplayRole && orientation == Qt::Horizontal && section < header.at(0).count())
+    if (role == Qt::DisplayRole && orientation == Qt::Horizontal && section < header.count())
     {
         return QVariant(header.at(section));
     }
