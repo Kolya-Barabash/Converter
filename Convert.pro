@@ -1,3 +1,4 @@
+
 #-------------------------------------------------
 #
 # Project created by QtCreator 2017-10-12T14:57:50
@@ -9,7 +10,7 @@ QT       += core gui sql
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Convert
-TEMPLATE = app
+TEMPLATE =  app
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -26,13 +27,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    tableviewer.cpp \
-    processing.cpp
+    processing.cpp \
+    convertclass.cpp \
+    tablemodel.cpp \
+    contractor.cpp
 
 HEADERS += \
         mainwindow.h \
-    tableviewer.h \
-    processing.h
+    processing.h \
+    convertclass.h \
+    tablemodel.h \
+    contractor.h
 
 FORMS += \
         mainwindow.ui
