@@ -29,6 +29,7 @@ public:
      */
     ConvertClass();
 
+
     void convertToSql(TableModel* model);
 private:
     QSqlDatabase dbMy;

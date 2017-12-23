@@ -19,19 +19,13 @@ void TableModel::setData(const QVector<QVector<QVariant>> &tableData)
     else
     {
         tData = tableData;
-        emit dataChanged(createIndex(0, 0), createIndex(tData.count(), header.count()));
+        emit dataChanged(createIndex(0, 0), createIndex(tData.count(), tData.at(0).count()));
     }
 }
 
-void TableModel::setHeaderData(const QStringList& tableHeader)
+void TableModel::setHeader(const QStringList& dataHeader)
 {
-    if (tableHeader.empty())
-    {
-    }
-    {
-        header = tableHeader;
-        emit headerDataChanged(Qt::Horizontal,0,header.count());
-    }
+    header = dataHeader;
 }
 
 void TableModel::clear()
@@ -46,6 +40,7 @@ void TableModel::setTypes(const QVector<QString>& tableTypes)
     types = tableTypes;
 }
 
+
 QString TableModel::getTableName()
 {
     return name;
@@ -56,6 +51,7 @@ QVector<QVector<QVariant>> TableModel::getData()
     return tData;
 }
 
+
 QStringList TableModel::getHeader()
 {
     return header;
@@ -65,6 +61,7 @@ QVector<QString> TableModel::getTypes()
 {
     return types;
 }
+
 
 int TableModel::rowCount(const QModelIndex&) const
 {

@@ -11,7 +11,7 @@ class TableModel: public QAbstractTableModel
 
     void setTableName(const QString& tableName);
     void setData(const QVector<QVector<QVariant>>& tableData);
-    void setHeaderData(const QStringList& tableHeader);
+    void setHeader(const QStringList& tableHeader);
     void setTypes(const QVector<QString>& tableTypes);
 
     QString getTableName();

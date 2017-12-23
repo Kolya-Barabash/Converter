@@ -27,35 +27,6 @@ void ConvertClass::convertToSql(TableModel* model)
     }
 
     dbMy.close();
-
-  /*
-  QFile file(fName);
-  if ( !file.open(QFile::ReadOnly | QFile::Text) )
-    qDebug() << "File not exists";
-  else
-  {
-    QTextStream in(&file);
-    QString line = in.readLine();
-    this ->generateQuery(line);
-    this->determineSchema(line);
-    QSqlQuery q;
-
-    if (!q.prepare(exIn))
-      qDebug() << q.lastError();
-    // Считываем данные до конца файла
-    while (!in.atEnd())
-    {
-      line = in.readLine();
-
-      for (QString item : parseStr(line))
-        q.addBindValue(item);
-      q.exec();
-    }
-    file.close();
-    dbMy.close();
-  }
-  */
-
 }
 
 void ConvertClass::generateQuery (QStringList header)
@@ -79,52 +50,6 @@ void ConvertClass::generateQuery (QStringList header)
   exIn += exV + ")";
   exCr += ")";
 }
-
-
-
-/*
-void ConvertClass::determineType()
-{
-  QFile file(fName);
-  if ( !file.open(QFile::ReadOnly | QFile::Text) )
-    qDebug() << "File not exists";
-  else
-  {
-    QTextStream in(&file);
-    QString line = in.readLine();
-    if (!in.atEnd())
-    {
-      line = in.readLine();
-      QString temp;
-      QStringList parse = parseStr(line);
-      types = new QString[parse.count()];
-      int i = 0;
-      for (QString item : parse)
-        types[i++] = whatType(item);
-      i = 0;
-      while (!in.atEnd())
-      {
-        i = 0;
-        line = in.readLine();
-        QStringList parse = parseStr(line);
-        for (QString item : parse)
-        {
-          temp = whatType(item);
-          if (types[i] != temp)
-          {
-            if ((temp == "TEXT") || (temp == "REAL" && types[i] == "INTEGER"))
-              types[i] = temp;
-          }
-          i++;
-        }
-      }
-    }
-    file.close();
-  }
-}
-*/
-
-
 
 void ConvertClass::determineSchema (QStringList header)
 {

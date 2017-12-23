@@ -6,13 +6,11 @@
 #define MAINWINDOW_H
 
 #include <convertclass.h>
-#include <tableviewer.h>
-#include <contractor.h>
 #include <QMainWindow>
 #include <QtSql>
+#include <Contractor.h>
 
-namespace Ui
-{
+namespace Ui {
 class MainWindow;
 }
 
@@ -36,13 +34,21 @@ public:
 
 private slots:
 
-
+    void on_convertButton_clicked();
     void on_convertSqlButton_clicked();
 
+    void on_actionOpenDb_triggered();
     void on_actionOpencsv_triggered();
+
+public slots:
+    void slotFillBox(const QStringList& tables);
+    void setModel(TableModel*);
+signals:
+    void sendCurrentTable(const QString& tableName);
 
 private:
     Ui::MainWindow *ui;
+
     Contractor contractor;
     QSqlDatabase db;    //база данных
     QString name;
