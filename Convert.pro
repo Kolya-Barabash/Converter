@@ -1,3 +1,4 @@
+
 #-------------------------------------------------
 #
 # Project created by QtCreator 2017-10-12T14:57:50
@@ -27,12 +28,16 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     processing.cpp \
-    convertclass.cpp
+    convertclass.cpp \
+    tablemodel.cpp \
+    contractor.cpp
 
 HEADERS += \
         mainwindow.h \
     processing.h \
-    convertclass.h
+    convertclass.h \
+    tablemodel.h \
+    contractor.h
 
 FORMS += \
         mainwindow.ui
