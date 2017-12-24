@@ -20,23 +20,47 @@
     connect(this, SIGNAL(sendCurrentTable(const QString&)), &contractor, SLOT(showTableSQL(const QString&)));
     connect(ui->tableBox, SIGNAL(currentIndexChanged(const QString&)), &contractor, SLOT(showTableSQL(const QString&)));
     connect(&contractor, SIGNAL(setTableToView(TableModel*)), this, SLOT(setModel(TableModel*)));
+
+    //кнопки
+    connect(ui->actionOpencsv, SIGNAL(triggered(bool)), this, SLOT(openCSV()));
+    connect(ui->actionOpenDb, SIGNAL(triggered(bool)), this, SLOT(openDB()));
+    connect(ui->convertButton, SIGNAL(clicked(bool)), this, SLOT(convertIntoCSV()));
+    connect(ui->convertSqlButton, SIGNAL(clicked(bool)), this, SLOT(convertIntoSql()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    if (db.isOpen())
-        db.close();
 }
 
+void MainWindow::convertIntoCSV()
+{
+    QString table = ui->tableBox->currentText();
 
-void MainWindow::on_convertSqlButton_clicked()
+    contractor.convertToCSV();
+
+    ui->statusBar->showMessage("Файл конвертирован", 5000);
+}
+
+void MainWindow::convertIntoSql()
 {
     contractor.convertToSQL();
     ui->statusBar->showMessage("Файл конвертирован", 5000);
 }
 
-void MainWindow::on_actionOpencsv_triggered()
+void MainWindow::openDB()
+{
+    contractor.openSQL();
+
+    emit sendCurrentTable(ui->tableBox->currentText());
+
+    ui->tableBox->show();
+    ui->convertButton->show();
+    ui->convertSqlButton->hide();
+}
+
+
+void MainWindow::openCSV()
 {
     contractor.openCSV();
 
@@ -47,29 +71,6 @@ void MainWindow::on_actionOpencsv_triggered()
     ui->sqlView->setModel(contractor.getModel());
 
     ui->statusBar->showMessage("Талица отображена!", 5000);
-}
-
-//конвертация в csv-файл
-void MainWindow::on_convertButton_clicked()
-{
-    QString table = ui->tableBox->currentText();
-
-    contractor.convertToCSV();
-
-    ui->statusBar->showMessage("Файл конвертирован", 5000);
-}
-
-//тренируемся запоминать данные
-void MainWindow::on_actionOpenDb_triggered()
-{
-
-    contractor.openSQL();
-
-    emit sendCurrentTable(ui->tableBox->currentText());
-
-    ui->tableBox->show();
-    ui->convertButton->show();
-    ui->convertSqlButton->hide();
 }
 
 void MainWindow::slotFillBox(const QStringList& tables)

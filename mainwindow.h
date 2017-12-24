@@ -34,15 +34,15 @@ public:
 
 private slots:
 
-    void on_convertButton_clicked();
-    void on_convertSqlButton_clicked();
+    void convertIntoCSV();
+    void convertIntoSql();
 
-    void on_actionOpenDb_triggered();
-    void on_actionOpencsv_triggered();
+    void openDB();
+    void openCSV();
 
-public slots:
     void slotFillBox(const QStringList& tables);
     void setModel(TableModel*);
+
 signals:
     void sendCurrentTable(const QString& tableName);
 
@@ -50,9 +50,6 @@ private:
     Ui::MainWindow *ui;
 
     Contractor contractor;
-    QSqlDatabase db;    //база данных
-    QString name;
-    bool isDatabase = false;
 };
 
 
