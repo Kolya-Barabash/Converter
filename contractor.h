@@ -3,7 +3,7 @@
 
 #include "convertclass.h"
 #include "QTextStream"
-
+#include <memory>
 #include "QDebug"
 
 class Contractor : public QObject
@@ -31,6 +31,7 @@ private:
     TableModel *model;
     QString dbFileName;
     QSqlDatabase db;
+    std::unique_ptr<TableModel> tmpModel;
 };
 
 #endif // CONTRACTOR_H

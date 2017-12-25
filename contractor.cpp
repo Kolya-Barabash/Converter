@@ -20,7 +20,9 @@ bool Contractor::openCSV()
         }
         else
         {
-            model = new TableModel;
+            tmpModel = std::unique_ptr<TableModel>(new TableModel());
+            model = tmpModel.get();
+            //model = new TableModel();
             if (whatType(name) == "INTEGER")
                 name = "table"+name;
             model->setTableName(name);
@@ -180,7 +182,9 @@ void Contractor::showTableSQL(const QString &tableName)
         fieldsStr << fieldsRec.fieldName(i);
     }
 
-    model = new TableModel();
+    tmpModel = std::unique_ptr<TableModel>(new TableModel());
+    model = tmpModel.get();
+    //model = new TableModel();
     model->setHeader(fieldsStr);
 
     QVector<QVector<QVariant>> tableData;
