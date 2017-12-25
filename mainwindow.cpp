@@ -11,37 +11,87 @@
 {
     ui->setupUi(this);
 
-    ui->showButton->hide();
     ui->tableBox->hide();
     ui->convertButton->hide();
     ui->convertSqlButton->hide();
+
+    //connections
+    connect(&contractor, SIGNAL(sendListOfTables(const QStringList&)), this, SLOT(slotFillBox(const QStringList&)));
+    connect(this, SIGNAL(sendCurrentTable(const QString&)), &contractor, SLOT(showTableSQL(const QString&)));
+    connect(ui->tableBox, SIGNAL(currentIndexChanged(const QString&)), &contractor, SLOT(showTableSQL(const QString&)));
+    connect(&contractor, SIGNAL(setTableToView(TableModel*)), this, SLOT(setModel(TableModel*)));
+
+    //кнопки
+    connect(ui->actionOpencsv, SIGNAL(triggered(bool)), this, SLOT(openCSV()));
+    connect(ui->actionOpenDb, SIGNAL(triggered(bool)), this, SLOT(openDB()));
+    connect(ui->convertButton, SIGNAL(clicked(bool)), this, SLOT(convertIntoCSV()));
+    connect(ui->convertSqlButton, SIGNAL(clicked(bool)), this, SLOT(convertIntoSql()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    if (db.isOpen())
-        db.close();
 }
 
-void MainWindow::on_convertSqlButton_clicked()
+void MainWindow::convertIntoCSV()
 {
-    ConvertClass convSql;
-    convSql.convertToSql(contractor.getModel());
-    ui->statusBar->showMessage("Файл конвертирован", 5000);
+    if (contractor.convertToCSV())
+        ui->statusBar->showMessage("Файл конвертирован!", 5000);
+    else
+        ui->statusBar->showMessage("Не выбран файл для сохранения!", 5000);
 }
 
-void MainWindow::on_actionOpencsv_triggered()
+void MainWindow::convertIntoSql()
 {
-    contractor.openCSV();
+    if (contractor.convertToSQL())
+        ui->statusBar->showMessage("Файл конвертирован!", 5000);
+    else
+        ui->statusBar->showMessage("Не выбран файл для сохранения!", 5000);
+}
 
-    ui->showButton->hide();
-    ui->tableBox->hide();
-    ui->convertButton->hide();
-    ui->convertSqlButton->show();
+void MainWindow::openDB()
+{
+    if (contractor.openSQL())
+    {
+        emit sendCurrentTable(ui->tableBox->currentText());
 
-    ui->sqlView->setModel(contractor.getModel());
+        ui->tableBox->show();
+        ui->convertButton->show();
+        ui->convertSqlButton->hide();
+    }
+    else
+       ui->statusBar->showMessage("Файл не выбран!", 5000);
+}
 
-    ui->statusBar->showMessage("Талица отображена!", 5000);
+
+void MainWindow::openCSV()
+{
+    if (contractor.openCSV())
+    {
+
+        ui->tableBox->hide();
+        ui->convertButton->hide();
+        ui->convertSqlButton->show();
+
+        ui->sqlView->setModel(contractor.getModel());
+
+        ui->statusBar->showMessage("Талица отображена!", 5000);
+    }
+    else
+        ui->statusBar->showMessage("Файл не выбран!", 5000);
+}
+
+void MainWindow::slotFillBox(const QStringList& tables)
+{
+    ui->tableBox->setEnabled(false);
+    ui->tableBox->clear();
+
+    ui->tableBox->addItems(tables);
+    ui->tableBox->setEnabled(true);
+}
+
+void MainWindow::setModel(TableModel *model)
+{
+    ui->sqlView->setModel(model);
 }
 

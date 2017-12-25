@@ -1,72 +1,56 @@
 #include "convertclass.h"
 
-ConvertClass::ConvertClass()
+ConvertToSqlClass::ConvertToSqlClass()
 {
 }
 
-void ConvertClass::convertToSql(TableModel* model)
+void ConvertToSqlClass::setTableModel(TableModel* modelT)
+{
+    model = modelT;
+}
+
+bool ConvertToSqlClass::convertToSql()
 {
     this->types = model->getTypes();
-    this->generateQuery(model->getHeader());
-    this->determineSchema(model->getHeader());
-
-    QSqlQuery q;
-
-    if (!q.prepare(exIn))
-      qDebug() << q.lastError();
-
-    QVector<QVector<QVariant>> data = model->getData();
-
-    for (int i = 0 ; i < data.count(); i++)
+    this->generateQuery();
+    if (this->determineSchema())
     {
-        for (int j = 0 ; j < data[i].count(); j++)
+        QSqlQuery q(dbMy);
+
+        if (!q.prepare(exIn))
+          qDebug() << q.lastError();
+
+        QVector<QVector<QVariant>> data = model->getData();
+
+        dbMy.transaction();
+        for (int i = 0 ; i < data.count(); i++)
         {
-            q.addBindValue(data[i][j]);
+            for (int j = 0 ; j < data[i].count(); j++)
+            {
+                q.addBindValue(data[i][j]);
+            }
+            q.exec();
         }
-        q.exec();
+        dbMy.commit();
+        q.finish();
+        q.clear();
+        dbMy.close();
+        dbMy.removeDatabase("tmp");
+        return true;
     }
 
-    dbMy.close();
-
-  /*
-  QFile file(fName);
-  if ( !file.open(QFile::ReadOnly | QFile::Text) )
-    qDebug() << "File not exists";
-  else
-  {
-    QTextStream in(&file);
-    QString line = in.readLine();
-    this ->generateQuery(line);
-    this->determineSchema(line);
-    QSqlQuery q;
-
-    if (!q.prepare(exIn))
-      qDebug() << q.lastError();
-    // Считываем данные до конца файла
-    while (!in.atEnd())
-    {
-      line = in.readLine();
-
-      for (QString item : parseStr(line))
-        q.addBindValue(item);
-      q.exec();
-    }
-    file.close();
-    dbMy.close();
-  }
-  */
-
+    return false;
 }
 
-void ConvertClass::generateQuery (QStringList header)
+void ConvertToSqlClass::generateQuery ()
 {
   int i = 0;
 
-  exCr = "create table T1(";
-  exIn = "insert into T1(";
+  exCr = "create table " + model->getTableName() + "(";
+  exIn = "insert into " + model->getTableName() + "(";
   QString exV(") values(");
 
-  for (QString item : header)
+  for (QString item : model->getHeader())
   {
     exCr += item + " ";
     exIn += item + ", ";
@@ -80,101 +64,85 @@ void ConvertClass::generateQuery (QStringList header)
   exCr += ")";
 }
 
-
-
-/*
-void ConvertClass::determineType()
+bool ConvertToSqlClass::determineSchema ()
 {
-  QFile file(fName);
-  if ( !file.open(QFile::ReadOnly | QFile::Text) )
-    qDebug() << "File not exists";
-  else
-  {
-    QTextStream in(&file);
-    QString line = in.readLine();
-    if (!in.atEnd())
+
+    QString fileName = QFileDialog::getSaveFileName(Q_NULLPTR, " Save File as", "", "Databases files (*.sqlite)");
+    if (fileName != "")
     {
-      line = in.readLine();
-      QString temp;
-      QStringList parse = parseStr(line);
-      types = new QString[parse.count()];
-      int i = 0;
-      for (QString item : parse)
-        types[i++] = whatType(item);
-      i = 0;
-      while (!in.atEnd())
-      {
-        i = 0;
-        line = in.readLine();
-        QStringList parse = parseStr(line);
-        for (QString item : parse)
+        dbMy = QSqlDatabase::addDatabase("QSQLITE","tmp");
+        dbMy.setDatabaseName(fileName);
+
+        //открываем базу данных
+        if (!dbMy.open())
+            qDebug() << dbMy.lastError();
+
+        //получаем список таблиц
+        QStringList tables = dbMy.tables();
+
+        QSqlQuery q(dbMy);
+        //проверяем, есть ли таблицы в базе
+
+        int decision = 0;
+        if (!tables.empty())
         {
-          temp = whatType(item);
-          if (types[i] != temp)
-          {
-            if ((temp == "TEXT") || (temp == "REAL" && types[i] == "INTEGER"))
-              types[i] = temp;
-          }
-          i++;
+            if (tables.contains(model->getTableName()))
+            {
+                //qDebug() << "Already have tables!";
+                QSqlRecord schema = dbMy.record(model->getTableName());
+                if (schema.count() == model->getHeader().count() )
+                {
+                    int j = 0;
+                    for (QString item : model->getHeader())
+                    {
+                        if (item == schema.fieldName(j))
+                          j++;
+                        else
+                          break;
+                    }
+
+                    if ( j != schema.count() )
+                    {
+                        decision = 1;
+                    }
+                }
+                else
+                {
+                    decision = 1;
+                }
+            }
+            else
+            {
+                decision = 2;
+            }
         }
-      }
-    }
-    file.close();
-  }
-}
-*/
-
-
-
-void ConvertClass::determineSchema (QStringList header)
-{
-  dbMy = QSqlDatabase::addDatabase("QSQLITE");
-  QString fileName = QFileDialog::getSaveFileName(nullptr, " Save File as", "", "Databases files (*.sqlite)");
-  dbMy.setDatabaseName(fileName);
-
-  //открываем базу данных
-  if (!dbMy.open())
-    qDebug() << dbMy.lastError();
-
-  //получаем список таблиц
-  QStringList tables = dbMy.tables();
-
-  QSqlQuery q;
-  //проверяем, есть ли таблицы в базе
-  if (!tables.empty())
-  {
-    //qDebug() << "Already have tables!";
-    QSqlRecord schema = dbMy.record(tables.at(0));
-    if (schema.count() == header.count() )
-    {
-      int j = 0;
-      for (QString item : header)
-      {
-        if (item == schema.fieldName(j))
-          j++;
         else
-          break;
-      }
+        {
+           decision = 2;
+        }
 
-      if ( j == schema.count() )
-      {
-        q.exec(QString("DELETE FROM " + tables.at(0) + ";"));
-        //qDebug() << "Truncate!";
-      }
-      else
-      {
-        q.exec(QString("DROP TABLE " + tables.at(0) + ";"));
-        if (!q.exec(exCr))
-          qDebug() << q.lastError();
-      }
+        dbMy.transaction();
+        switch (decision)
+        {
+        case 0:
+            q.exec(QString("DELETE FROM " + model->getTableName() + ";"));
+            qDebug() << "Odinakovie";
+            break;
+        case 1:
+            q.exec(QString("DROP TABLE " + model->getTableName() + ";"));
+            qDebug() << "Raznie schemi";
+        case 2:
+            if (!q.exec(exCr))
+                qDebug() << q.lastError();
+            qDebug() << "Net tablici";
+            break;
+        default:
+            break;
+        }
+        dbMy.commit();
+        q.finish();
+        q.clear();
+        return true;
     }
-    else
-    {
-      q.exec(QString("DROP TABLE " + tables.at(0) + ";"));
-      if (!q.exec(exCr))
-        qDebug() << q.lastError();
-    }
-  }
-  else if (!q.exec(exCr))
-    qDebug() << q.lastError();
+    return false;
 }
