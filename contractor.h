@@ -1,14 +1,9 @@
 #ifndef CONTRACTOR_H
 #define CONTRACTOR_H
 
-#include "tablemodel.h"
-#include "processing.h"
 #include "convertclass.h"
 #include "QTextStream"
-#include "QSqlDatabase"
-#include "QSqlQuery"
-#include "QSqlRecord"
-#include "QFileDialog"
+#include <memory>
 #include "QDebug"
 
 class Contractor : public QObject
@@ -18,13 +13,12 @@ class Contractor : public QObject
 public:
     explicit Contractor(QObject* parent = 0);
 
-    void openCSV();
-
-    void openSQL();
+    bool openCSV();
+    bool openSQL();
     void closeSql();
 
-    void convertToSQL();
-    void convertToCSV();
+    bool convertToSQL();
+    bool convertToCSV();
 
     TableModel* getModel();
 public slots:
@@ -37,6 +31,7 @@ private:
     TableModel *model;
     QString dbFileName;
     QSqlDatabase db;
+    std::unique_ptr<TableModel> tmpModel;
 };
 
 #endif // CONTRACTOR_H

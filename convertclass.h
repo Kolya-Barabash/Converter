@@ -1,42 +1,43 @@
 /*!
  *\file
+<<<<<<< HEAD
  *\brief Header file for ConvertClass
+=======
+ *\brief Header file for ConvertToSqlClass
+>>>>>>> CSV-Sqlite
  */
 #ifndef CONVERTCLASS_H
 #define CONVERTCLASS_H
 
-#include "QtSql"
-#include "QFileDialog"
 #include <processing.h>
-#include <QMainWindow>
-#include <QtSql>
-#include <QSqlQuery>
-#include "QFileDialog"
-#include <QStandardItemModel>
-#include <QTreeView>
 #include <tablemodel.h>
+#include "QFileDialog"
+#include <QSqlQuery>
+#include <QDebug>
+#include <QtSql>
 
 /*!
- * \brief The ConvertClass class.
+ * \brief The ConvertToSqlClass class.
  *
  * This class provides file handling and conversion to Sqlite
  */
-class ConvertClass
+class ConvertToSqlClass
 {
 public:
     /*!
-     * \brief ConvertClass constructor.
+     * \brief ConvertToSqlClass constructor.
      */
-    ConvertClass();
+    ConvertToSqlClass();
 
-
-    void convertToSql(TableModel* model);
+    void setTableModel(TableModel* modelT);
+    bool convertToSql();
 private:
     QSqlDatabase dbMy;
     QString fName,exCr,exIn;
     QVector<QString> types;
-    void generateQuery (QStringList header);
-    void determineSchema (QStringList header);
+    TableModel *model = Q_NULLPTR;
+    void generateQuery ();
+    bool determineSchema ();
 };
 
 #endif // CONVERTCLASS_H

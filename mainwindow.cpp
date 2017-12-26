@@ -35,42 +35,51 @@ MainWindow::~MainWindow()
 
 void MainWindow::convertIntoCSV()
 {
-    QString table = ui->tableBox->currentText();
 
-    contractor.convertToCSV();
-
-    ui->statusBar->showMessage("Файл конвертирован", 5000);
+    if (contractor.convertToCSV())
+        ui->statusBar->showMessage("Файл конвертирован!", 5000);
+    else
+        ui->statusBar->showMessage("Не выбран файл для сохранения!", 5000);
 }
 
 void MainWindow::convertIntoSql()
 {
-    contractor.convertToSQL();
-    ui->statusBar->showMessage("Файл конвертирован", 5000);
+    if (contractor.convertToSQL())
+        ui->statusBar->showMessage("Файл конвертирован!", 5000);
+    else
+        ui->statusBar->showMessage("Не выбран файл для сохранения!", 5000);
 }
 
 void MainWindow::openDB()
 {
-    contractor.openSQL();
+    if (contractor.openSQL())
+    {
+        emit sendCurrentTable(ui->tableBox->currentText());
 
-    emit sendCurrentTable(ui->tableBox->currentText());
-
-    ui->tableBox->show();
-    ui->convertButton->show();
-    ui->convertSqlButton->hide();
+        ui->tableBox->show();
+        ui->convertButton->show();
+        ui->convertSqlButton->hide();
+    }
+    else
+       ui->statusBar->showMessage("Файл не выбран!", 5000);
 }
 
 
 void MainWindow::openCSV()
 {
-    contractor.openCSV();
+    if (contractor.openCSV())
+    {
 
-    ui->tableBox->hide();
-    ui->convertButton->hide();
-    ui->convertSqlButton->show();
+        ui->tableBox->hide();
+        ui->convertButton->hide();
+        ui->convertSqlButton->show();
 
-    ui->sqlView->setModel(contractor.getModel());
+        ui->sqlView->setModel(contractor.getModel());
 
-    ui->statusBar->showMessage("Талица отображена!", 5000);
+        ui->statusBar->showMessage("Талица отображена!", 5000);
+    }
+    else
+        ui->statusBar->showMessage("Файл не выбран!", 5000);
 }
 
 void MainWindow::slotFillBox(const QStringList& tables)

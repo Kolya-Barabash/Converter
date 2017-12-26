@@ -5,10 +5,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <convertclass.h>
-#include <QMainWindow>
-#include <QtSql>
+
 #include <Contractor.h>
+#include <QMainWindow>
+
 
 namespace Ui {
 class MainWindow;
