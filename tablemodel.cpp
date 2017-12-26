@@ -89,7 +89,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 
 QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role == Qt::DisplayRole && orientation == Qt::Horizontal && section < header.count())
+    if ( section < header.count() && orientation == Qt::Horizontal  && role == Qt::DisplayRole )
     {
         return QVariant(header.at(section));
     }

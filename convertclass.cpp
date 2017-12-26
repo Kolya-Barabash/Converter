@@ -9,8 +9,10 @@ void ConvertToSqlClass::setTableModel(TableModel* modelT)
     model = modelT;
 }
 
-bool ConvertToSqlClass::convertToSql()
+bool ConvertToSqlClass::convertToSql(QString& fileName)
 {
+    fName = fileName;
+
     this->types = model->getTypes();
     this->generateQuery();
     if (this->determineSchema())
@@ -18,7 +20,7 @@ bool ConvertToSqlClass::convertToSql()
         QSqlQuery q(dbMy);
 
         if (!q.prepare(exIn))
-          qDebug() << q.lastError();
+            qDebug() << q.lastError();
 
         QVector<QVector<QVariant>> data = model->getData();
 
@@ -33,7 +35,6 @@ bool ConvertToSqlClass::convertToSql()
         }
         dbMy.commit();
         q.finish();
-        q.clear();
         dbMy.close();
         dbMy.removeDatabase("tmp");
         return true;
@@ -44,34 +45,34 @@ bool ConvertToSqlClass::convertToSql()
 
 void ConvertToSqlClass::generateQuery ()
 {
-  int i = 0;
+    int i = 0;
 
-  exCr = "create table " + model->getTableName() + "(";
-  exIn = "insert into " + model->getTableName() + "(";
-  QString exV(") values(");
+    exCr = "create table " + model->getTableName() + "(";
+    exIn = "insert into " + model->getTableName() + "(";
+    QString exV(") values(");
 
-  for (QString item : model->getHeader())
-  {
-    exCr += item + " ";
-    exIn += item + ", ";
-    exV += "?, ";
-    exCr += types[i++] + ", ";
-  }
-  exIn.remove(exIn.size() - 2, 2);
-  exCr.remove(exCr.size() - 2, 2);
-  exV.remove(exV.size() - 2, 2);
-  exIn += exV + ")";
-  exCr += ")";
+    for (QString item : model->getHeader())
+    {
+        exCr += item + " ";
+        exIn += item + ", ";
+        exV += "?, ";
+        exCr += types[i++] + ", ";
+    }
+    exIn.remove(exIn.size() - 2, 2);
+    exCr.remove(exCr.size() - 2, 2);
+    exV.remove(exV.size() - 2, 2);
+    exIn += exV + ")";
+    exCr += ")";
 }
 
 bool ConvertToSqlClass::determineSchema ()
 {
 
-    QString fileName = QFileDialog::getSaveFileName(Q_NULLPTR, " Save File as", "", "Databases files (*.sqlite)");
-    if (fileName != "")
+    //QString fileName = QFileDialog::getSaveFileName(Q_NULLPTR, " Save File as", "", "Databases files (*.sqlite)");
+    if (fName != "")
     {
         dbMy = QSqlDatabase::addDatabase("QSQLITE","tmp");
-        dbMy.setDatabaseName(fileName);
+        dbMy.setDatabaseName(fName);
 
         //открываем базу данных
         if (!dbMy.open())
@@ -96,9 +97,9 @@ bool ConvertToSqlClass::determineSchema ()
                     for (QString item : model->getHeader())
                     {
                         if (item == schema.fieldName(j))
-                          j++;
+                            j++;
                         else
-                          break;
+                            break;
                     }
 
                     if ( j != schema.count() )
@@ -118,7 +119,7 @@ bool ConvertToSqlClass::determineSchema ()
         }
         else
         {
-           decision = 2;
+            decision = 2;
         }
 
         dbMy.transaction();
@@ -141,7 +142,6 @@ bool ConvertToSqlClass::determineSchema ()
         }
         dbMy.commit();
         q.finish();
-        q.clear();
         return true;
     }
     return false;

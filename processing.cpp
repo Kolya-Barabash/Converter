@@ -15,35 +15,35 @@ QString whatType(QString str)
 
 QStringList parseStr(QString str)
 {
-        QStringList ret;
-        int in;
+    QStringList ret;
+    int in;
 
-        while ( (in = str.indexOf(";")) != -1)
+    while ( (in = str.indexOf(";")) != -1)
+    {
+        QString subStr = str;
+        subStr.remove(in,str.size());
+        int countQ = subStr.count("\"");
+
+        while (countQ % 2 != 0)
         {
-            QString subStr = str;
-            subStr.remove(in,str.size());
-            int countQ = subStr.count("\"");
-
-            while (countQ % 2 != 0)
+            int in2 = str.indexOf(";",in+1);
+            if (in2 == -1)
             {
-                int in2 = str.indexOf(";",in+1);
-                if (in2 == -1)
-                {
-                    ret.append(withoutQuotes(str));
-                    return ret;
-                }
-                subStr = str;
-                subStr.remove(in2,str.size());
-                countQ = subStr.count("\"");
-                in = in2;
+                ret.append(withoutQuotes(str));
+                return ret;
             }
-
-            ret.append(withoutQuotes(subStr));
-            str.remove(0,subStr.size()+1);
+            subStr = str;
+            subStr.remove(in2,str.size());
+            countQ = subStr.count("\"");
+            in = in2;
         }
 
-        ret.append(withoutQuotes(str));
-        return ret;
+        ret.append(withoutQuotes(subStr));
+        str.remove(0,subStr.size()+1);
+    }
+
+    ret.append(withoutQuotes(str));
+    return ret;
 }
 
 QString withoutQuotes(QString str)

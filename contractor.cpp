@@ -4,9 +4,9 @@ Contractor::Contractor(QObject* parent): QObject(parent)
 {
 }
 
-bool Contractor::openCSV()
+bool Contractor::openCSV(QString& fileName)
 {
-    QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,"Open database", "","Databases files (*.csv)",  Q_NULLPTR, QFileDialog::DontConfirmOverwrite);
+    //QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,"Open database", "","Databases files (*.csv)",  Q_NULLPTR, QFileDialog::DontConfirmOverwrite);
     if (fileName != "")
     {
         QString name = fileName.mid(fileName.lastIndexOf("/") + 1);
@@ -47,8 +47,8 @@ bool Contractor::openCSV()
                 int i = 0;
                 for (QString item : parse)
                 {
-                  types[i] = whatType(item);
-                  temp[i++] = item;
+                    types[i] = whatType(item);
+                    temp[i++] = item;
                 }
 
                 data.push_back(temp);
@@ -62,14 +62,14 @@ bool Contractor::openCSV()
 
                     for (QString item : parse)
                     {
-                      tmp = whatType(item);
-                      if (types[i] != tmp)
-                      {
-                        if ((tmp == "TEXT") || (tmp == "REAL" && types[i] == "INTEGER"))
-                          types[i] = tmp;
-                      }
-                      temp[i] = item;
-                      i++;
+                        tmp = whatType(item);
+                        if (types[i] != tmp)
+                        {
+                            if ((tmp == "TEXT") || (tmp == "REAL" && types[i] == "INTEGER"))
+                                types[i] = tmp;
+                        }
+                        temp[i] = item;
+                        i++;
                     }
                     data.push_back(temp);
                 }
@@ -85,13 +85,12 @@ bool Contractor::openCSV()
     return false;
 }
 
-bool Contractor::openSQL()
+bool Contractor::openSQL(QString& fileName)
 {
     if (db.isOpen())
         db.close();
 
-    QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,"Open File", "", "Databases files (*.sqlite)", Q_NULLPTR, QFileDialog::DontConfirmOverwrite);
-
+    //QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,"Open File", "", "Databases files (*.sqlite)", Q_NULLPTR, QFileDialog::DontConfirmOverwrite);
     if (fileName != "")
     {
 
@@ -107,18 +106,17 @@ bool Contractor::openSQL()
     return false;
 }
 
-void Contractor::closeSql()
+void Contractor::closeSQL()
 {
     db.close();
 }
 
-
-bool Contractor::convertToCSV()
+bool Contractor::convertToCSV(QString& fileName)
 {
     //QString table = ui->tableBox->currentText();
 
     //создаем csv файл с выбранной таблицей
-    QString fileName = QFileDialog::getSaveFileName(Q_NULLPTR," Save File as", "", "Databases files (*.csv)", Q_NULLPTR, QFileDialog::DontConfirmOverwrite);
+    //QString fileName = QFileDialog::getSaveFileName(Q_NULLPTR," Save File as", "", "Databases files (*.csv)", Q_NULLPTR, QFileDialog::DontConfirmOverwrite);
     if (fileName != "")
     {
         QFile fileCsv(fileName);
@@ -136,7 +134,7 @@ bool Contractor::convertToCSV()
         csv << headers.join(";") << endl;
 
         QStringList str;
-        for (int i = 0; i < tableData.size();i++)
+        for (int i = 0; i < tableData.size(); i++)
         {
             str.clear();
             for (int j = 0; j < tableData[i].size(); j++)
@@ -153,11 +151,11 @@ bool Contractor::convertToCSV()
     return false;
 }
 
-bool Contractor::convertToSQL()
+bool Contractor::convertToSQL(QString& fileName)
 {
     ConvertToSqlClass convSql;
     convSql.setTableModel(model);
-    if (convSql.convertToSql())
+    if (convSql.convertToSql(fileName))
         return true;
     return false;
 }
@@ -184,9 +182,9 @@ void Contractor::showTableSQL(const QString &tableName)
         fieldsStr << fieldsRec.fieldName(i);
     }
 
-
     tmpModel = std::unique_ptr<TableModel>(new TableModel());
     model = tmpModel.get();
+    //model = new TableModel();
     model->setHeader(fieldsStr);
 
     QVector<QVector<QVariant>> tableData;

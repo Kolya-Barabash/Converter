@@ -5,7 +5,7 @@
 #include <QItemSelectionModel>
 #include <QTreeView>
 
-	MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
@@ -35,8 +35,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::convertIntoCSV()
 {
+    QString fileName = QFileDialog::getSaveFileName(nullptr," Save File as", "", "Databases files (*.csv)", Q_NULLPTR, QFileDialog::DontConfirmOverwrite);
 
-    if (contractor.convertToCSV())
+    if (contractor.convertToCSV(fileName))
         ui->statusBar->showMessage("Файл конвертирован!", 5000);
     else
         ui->statusBar->showMessage("Не выбран файл для сохранения!", 5000);
@@ -44,7 +45,9 @@ void MainWindow::convertIntoCSV()
 
 void MainWindow::convertIntoSql()
 {
-    if (contractor.convertToSQL())
+    QString fileName = QFileDialog::getSaveFileName(nullptr, " Save File as", "", "Databases files (*.sqlite)");
+
+    if (contractor.convertToSQL(fileName))
         ui->statusBar->showMessage("Файл конвертирован!", 5000);
     else
         ui->statusBar->showMessage("Не выбран файл для сохранения!", 5000);
@@ -52,7 +55,9 @@ void MainWindow::convertIntoSql()
 
 void MainWindow::openDB()
 {
-    if (contractor.openSQL())
+    QString fileName = QFileDialog::getOpenFileName(Q_NULLPTR,"Open File", "", "Databases files (*.sqlite)", Q_NULLPTR, QFileDialog::DontConfirmOverwrite);
+
+    if (contractor.openSQL(fileName))
     {
         emit sendCurrentTable(ui->tableBox->currentText());
 
@@ -61,13 +66,15 @@ void MainWindow::openDB()
         ui->convertSqlButton->hide();
     }
     else
-       ui->statusBar->showMessage("Файл не выбран!", 5000);
+        ui->statusBar->showMessage("Файл не выбран!", 5000);
 }
 
 
 void MainWindow::openCSV()
 {
-    if (contractor.openCSV())
+    QString fileName = QFileDialog::getOpenFileName(nullptr,"Open database", "","Databases files (*.csv)",  Q_NULLPTR, QFileDialog::DontConfirmOverwrite);
+
+    if (contractor.openCSV(fileName))
     {
 
         ui->tableBox->hide();

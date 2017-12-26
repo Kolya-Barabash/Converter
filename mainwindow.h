@@ -5,12 +5,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
 #include <Contractor.h>
 #include <QMainWindow>
 
-
-namespace Ui {
+namespace Ui
+{
 class MainWindow;
 }
 
