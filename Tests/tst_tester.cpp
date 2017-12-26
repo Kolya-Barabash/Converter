@@ -107,7 +107,6 @@ void Tester::testAll()
 }
 
 
-
 QTEST_APPLESS_MAIN(Tester)
 
 #include "tst_tester.moc"
